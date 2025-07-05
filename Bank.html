@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>State Bank of India</title>
+    <style>
+        * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url('../Banking/pictures/b1.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+}
+
+.image-header {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 90%;
+    width: 400px;
+    z-index: 1;
+}
+
+.image-header img {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.container {
+    background-color: #2866ca;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    right: 1200px; 
+    transform: translateY(-50%);
+}
+
+
+
+
+h2 {
+    text-align: center;
+    color: #1e2b39;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+input, select, button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    border-radius: 10px;
+    border: 1px solid #e3c1c1;
+    font-size: 16px;
+    transition: all 0.2s ease-in-out;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #0072ff;
+    box-shadow: 0 0 8px rgba(0,114,255,0.2);
+}
+
+button {
+    background-color: #18c6d6;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #005fcc;
+}
+
+p {
+    margin-top: 16px;
+    font-size: 16px;
+    color: #333;
+}
+
+.hidden {
+    display: none;
+}
+
+    </style>
+</head>
+<body>
+    
+
+
+    <!-- Login Form -->
+    <div class="container" id="loginDiv">
+        <h2>BANK</h2>
+        <input type="text" id="name" placeholder="Enter customer name">
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Menu & Operations -->
+    <div class="container hidden" id="menuDiv">
+        <p id="greeting" style="text-align:center; font-weight:bold;"></p>
+        <select id="menu">
+            <option value="">-- Select Operation --</option>
+            <option value="balance">1. Bank Balance</option>
+            <option value="withdraw">2. Withdraw</option>
+            <option value="deposit">3. Cardless Deposit</option>
+            <option value="update">4. Mobile Number Update</option>
+            <option value="statement">5. Mini Statement</option>
+        </select>
+        <div id="operationArea"></div>
+    </div>
+
+    <script>
+        let balance = 10000;
+
+        function login() {
+            const name = document.getElementById('name').value;
+            const pass = document.getElementById('password').value;
+            if (name && pass) {
+                document.getElementById('loginDiv').classList.add('hidden');
+                document.getElementById('menuDiv').classList.remove('hidden');
+                document.getElementById('greeting').innerText = `Welcome, ${name}`;
+            } else {
+                alert("Please enter both name and password.");
+            }
+        }
+
+        document.getElementById('menu').addEventListener('change', function () {
+            const op = this.value;
+            const opArea = document.getElementById('operationArea');
+            opArea.innerHTML = '';
+
+            switch (op) {
+                case 'balance':
+                    opArea.innerHTML = `<p>Available Balance: <strong>₹${balance}</strong></p>`;
+                    break;
+
+                case 'withdraw':
+                    opArea.innerHTML = `
+                        <input type="number" id="withdrawAmt" placeholder="Enter amount to withdraw">
+                        <button onclick="withdraw()">Withdraw</button>
+                    `;
+                    break;
+
+                case 'deposit':
+                    opArea.innerHTML = `
+                        <input type="number" id="depositAmt" placeholder="Enter amount to deposit">
+                        <button onclick="deposit()">Deposit</button>
+                    `;
+                    break;
+
+                case 'update':
+                    opArea.innerHTML = `
+                        <input type="text" id="num1" placeholder="Enter last 4 digits">
+                        <input type="text" id="num2" placeholder="Re-enter last 4 digits">
+                        <button onclick="updateNumber()">Update Number</button>
+                    `;
+                    break;
+
+                case 'statement':
+                    opArea.innerHTML = `<p>Mini Statement Not Available</p>`;
+                    break;
+            }
+        });
+
+        function withdraw() {
+            let amt = parseInt(document.getElementById('withdrawAmt').value);
+            if (isNaN(amt) || amt <= 0) {
+                alert("Enter a valid amount.");
+                return;
+            }
+            if (amt <= balance) {
+                balance -= amt;
+                alert("Withdrawn! New Balance: ₹" + balance);
+            } else {
+                alert("Insufficient Balance");
+            }
+        }
+
+        function deposit() {
+            let amt = parseInt(document.getElementById('depositAmt').value);
+            if (isNaN(amt) || amt <= 0) {
+                alert("Enter a valid amount.");
+                return;
+            }
+            balance += amt;
+            alert("Deposited! New Balance: ₹" + balance);
+        }
+
+        function updateNumber() {
+            const n1 = document.getElementById('num1').value;
+            const n2 = document.getElementById('num2').value;
+            if (!n1 || !n2 || n1.length !== 4 || n2.length !== 4) {
+                alert("Enter valid 4-digit numbers.");
+                return;
+            }
+            if (n1 !== n2) {
+                alert("Number updated successfully!");
+            } else {
+                alert("Please enter different numbers to update.");
+            }
+        }
+    </script>
+
+</body>
+</html>
